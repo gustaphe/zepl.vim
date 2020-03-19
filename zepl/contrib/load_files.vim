@@ -6,6 +6,10 @@
 function! zepl#contrib#load_files#load(...) abort
     let fns = (a:0 > 0 ? a:000 : [expand('%')])
     let fns = map(copy(fns), 'fnamemodify(expand(v:val), ":p")')
+	if has_key(b:repl_config,"convert_windows_filenames") && b:repl_config["convert_windows_filenames"]
+		let fns = map(copy(fns), 'substitute(v:val,"\\","/","g")')
+	end
+
     " let fns = filter(uniq(copy(fns)), 'filereadable(v:val)')
     let cmds = map(copy(fns), 'printf(b:repl_config["load_file"], v:val)')
     call zepl#send(cmds)
